@@ -1,10 +1,8 @@
 package com.example.korzen.rpi_car_controller;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.view.View;
-import java.util.Set;
+
 
 public class MainActivity extends BluetoothActivity {
 
