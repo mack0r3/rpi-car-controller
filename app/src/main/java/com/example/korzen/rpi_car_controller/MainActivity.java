@@ -1,7 +1,10 @@
 package com.example.korzen.rpi_car_controller;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 
 public class MainActivity extends BluetoothActivity {
@@ -10,19 +13,23 @@ public class MainActivity extends BluetoothActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.v("Joystick", "hello");
+
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
+        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+                write(angle + "#" + strength);
+            }
+        });
     }
 
-    public void onConnectClicked(View view) {
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(bluetoothDevice != null) {
             connect(bluetoothDevice);
         }
-    }
-
-    public void onOnClicked(View view) {
-        write("1");
-    }
-
-    public void onOffClicked(View view) {
-        write("0");
     }
 }

@@ -72,10 +72,10 @@ public class BluetoothRemoteControlApp {
                 return false;
             }
 
-            byte btMessage = (byte)((message.equals("1")) ? 1 : 0);
+            byte[] data = message.getBytes();
 
             try {
-                outputStream.write(btMessage);
+                outputStream.write(data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
