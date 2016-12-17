@@ -14,8 +14,6 @@ public class MainActivity extends BluetoothActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.v("Joystick", "hello");
-
         JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
