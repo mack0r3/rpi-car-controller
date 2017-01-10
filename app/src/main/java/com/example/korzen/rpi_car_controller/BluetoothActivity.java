@@ -5,8 +5,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 
 import java.util.Set;
 
@@ -20,18 +23,23 @@ public class BluetoothActivity extends AppCompatActivity {
 
     protected BluetoothDevice bluetoothDevice;
 
+    protected Button connectButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         btControlApp = new BluetoothRemoteControlApp();
         bluetoothDevice = findDevice();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         enableBluetoothIfNecessary();
+    }
+
+    protected void setHandler(Handler handler) {
+        btControlApp.setHandler(handler);
     }
 
     protected void connect(BluetoothDevice device) {

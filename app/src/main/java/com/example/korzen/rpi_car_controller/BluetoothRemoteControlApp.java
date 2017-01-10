@@ -2,6 +2,7 @@ package com.example.korzen.rpi_car_controller;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +14,11 @@ import java.util.UUID;
 
 public class BluetoothRemoteControlApp {
 
+    public final static int MSG_CONNECTED = 0;
+    public final static int MSG_CONNECTION_ERROR = 1;
+
     private BluetoothThread bluetoothThread;
+    private Handler handler;
 
     public BluetoothRemoteControlApp() {
 
@@ -24,9 +29,20 @@ public class BluetoothRemoteControlApp {
         bluetoothThread.start();
     }
 
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+
+    private void sendMessage(int what, Object object) {
+        if (handler != null) {
+            handler.obtainMessage(what, object).sendToTarget();
+        }
+    }
+
     public boolean write(String message) {
-        if(bluetoothThread != null)
+        if (bluetoothThread != null) {
             return bluetoothThread.write(message);
+        }
 
         return false;
     }
@@ -53,12 +69,15 @@ public class BluetoothRemoteControlApp {
                 socket.connect();
             } catch (IOException e) {
                 e.printStackTrace();
+                sendMessage(MSG_CONNECTION_ERROR, null);
                 try {
                     socket.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }
+
+            sendMessage(MSG_CONNECTED, null);
 
             try {
                 outputStream = socket.getOutputStream();
@@ -68,7 +87,7 @@ public class BluetoothRemoteControlApp {
         }
 
         public boolean write(String message) {
-            if(outputStream == null || message == null) {
+            if (outputStream == null || message == null) {
                 return false;
             }
 
