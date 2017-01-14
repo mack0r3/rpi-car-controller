@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -22,6 +23,7 @@ public class MainActivity extends BluetoothActivity implements Handler.Callback 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -38,15 +40,19 @@ public class MainActivity extends BluetoothActivity implements Handler.Callback 
     }
 
     public void onConnectClicked(View view) {
-        if (bluetoothDevice != null) {
-            connectButton.setText("Connecting...");
-            connectButton.setEnabled(false);
-            connect(bluetoothDevice);
+
+        if (bluetoothDevice == null) {
+            return;
         }
+
+        connectButton.setText("Connecting...");
+        connectButton.setEnabled(false);
+        connect(bluetoothDevice);
     }
 
     @Override
     public boolean handleMessage(Message message) {
+
         switch (message.what) {
             case BluetoothRemoteControlApp.MSG_CONNECTED:
                 connectButton.setText("Connected");

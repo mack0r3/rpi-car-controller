@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.Set;
 
@@ -19,17 +20,17 @@ import java.util.Set;
 
 public class BluetoothActivity extends AppCompatActivity {
 
+    private static final int ENABLE_BLUETOOTH = 1;
+
     private static BluetoothRemoteControlApp btControlApp;
 
     protected BluetoothDevice bluetoothDevice;
-
-    protected Button connectButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         btControlApp = new BluetoothRemoteControlApp();
-        bluetoothDevice = findDevice();
+        bluetoothDevice = findPairedDevice("raspberrypi");
     }
 
     @Override
@@ -50,26 +51,27 @@ public class BluetoothActivity extends AppCompatActivity {
         return btControlApp.write(message);
     }
 
-    private void enableBluetoothIfNecessary()
-    {
+    private void enableBluetoothIfNecessary() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(!bluetoothAdapter.isEnabled()) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, ENABLE_BLUETOOTH);
         }
 
     }
 
-    private BluetoothDevice findDevice() {
+    private BluetoothDevice findPairedDevice(String deviceName) {
         BluetoothAdapter bluetoothAdapter;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
         for (BluetoothDevice pairedDevice: pairedDevices) {
-            if(pairedDevice.getName().equals("raspberrypi"))
+            if(pairedDevice.getName().equals(deviceName))
                 return pairedDevice;
         }
+
+        Toast.makeText(this, "Your device is not paired with " + deviceName, Toast.LENGTH_SHORT).show();
 
         return null;
     }
